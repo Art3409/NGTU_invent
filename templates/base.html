@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Инвентаризация</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="body-wrapper">
+        <nav class="navbar-container">
+            <div class="navbar-left">
+                <a href="{{ url_for('index') }}" class="navbar-brand">ИВЦ НГТУ</a>
+                <ul class="navbar-links">
+                    {% if current_user.is_authenticated %}
+                    <li><a href="{{ url_for('rooms') }}">Аудитории</a></li>
+                    <li><a href="{{ url_for('items') }}">Предметы</a></li>
+                    {% if current_user.has_role('superadmin') %}
+                    <li><a href="{{ url_for('register') }}">Регистрация</a></li>
+                    {% endif %}
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="navbar-right">
+                {% if current_user.is_authenticated %}
+                  <span class="navbar-username">{{ current_user.username }}</span>
+                 <a href="{{ url_for('logout') }}">Выход</a>
+                 {% endif %}
+            </div>
+        </nav>
+
+        <div class="welcome-container">
+          <div class="welcome-content">
+              <div class="flashes-container">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                    <ul class="flashes">
+                        {% for category, message in messages %}
+                        <li class="alert alert-{{ category }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    {% endwith %}
+                </div>
+               {% block content %}{% endblock %}
+            </div>
+             {% if request.endpoint == 'index' %}
+               <img src="\static\1.jpg" alt="Your Image" class="welcome-image">
+             {% endif %}
+        </div>
+
+         <footer class="footer">
+             Нижегородский Государственный Технический Университет им. Р. Е. Алексеева <a href="www.nntu.ru">www.nntu.ru</a><br>
+            Разработано: Информационно-вычислительный центр 6 корпус.
+        </footer>
+    </div>
+</body>
+</html>

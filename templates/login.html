@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+     <h1 style="margin-bottom: 0;">Добро пожаловать</h1>
+     <p>Информационно-вычислительный центр НГТУ. Панель        администрирования</p>
+     <div class="auth-container">
+        <div class="form-container">
+            <form method="post">
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    {{ form.username.label }}
+                    {{ form.username(class="form-control") }}
+                    {% for error in form.username.errors %}
+                        <span class="error-message">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    {{ form.password.label }}
+                    {{ form.password(class="form-control") }}
+                    {% for error in form.password.errors %}
+                        <span class="error-message">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                <button type="submit" class="button">Войти</button>
+            </form>
+        </div>
+       <img src="static\1.jpg" alt="Your Image" class="welcome-image">
+   </div>
+{% endblock %}

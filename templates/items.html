@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Предметы</h1>
+    <div class="table-container">
+        <table class="table" id="itemsTable">
+            <thead>
+                <tr>
+                    <th>Тип</th>
+                    <th>Описание</th>
+                    <th>Количество</th>
+                    <th>Статус</th>
+                    <th>Аудитория</th>
+                    <th>Действия</th>
+                </tr>
+                 <tr class="search-row">
+                    <th>
+                        <input type="text" id="typeInput" class="search-input" placeholder="Поиск">
+                    </th>
+                    <th>
+                        <input type="text" id="descriptionInput" class="search-input" placeholder="Поиск">
+                    </th>
+                    <th>
+                        <input type="text" id="quantityInput" class="search-input" placeholder="Поиск">
+                     </th>
+                    <th>
+                        <input type="text" id="statusInput" class="search-input" placeholder="Поиск">
+                     </th>
+                       <th>
+                        <input type="text" id="roomInput" class="search-input" placeholder="Поиск">
+                     </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ item.type }}</td>
+                    <td>{{ item.description }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.status }}</td>
+                    <td>
+                        {% if item.room %}
+                            {{ item.room.name }}
+                        {% else %}
+                            Не присвоено
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('edit_item', item_id=item.id) }}" class="button">Редактировать</a>
+                        <form method="post" action="{{ url_for('delete_item', item_id=item.id) }}" style="display: inline;">
+                            <button type="submit" class="button button-danger" onclick="return confirm('Вы уверены, что хотите удалить этот предмет?')">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script src="{{ url_for('static', filename='search.js') }}"></script>
+{% endblock %}
+
