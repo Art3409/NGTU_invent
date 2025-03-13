@@ -277,3 +277,20 @@ ul.flashes {
 .search-input:focus {
     border-color: #66afe9; /* Изменение цвета границы при фокусе */
 }
+.form-group {
+    margin-bottom: 15px; /* Добавьте отступ снизу для разделения полей */
+}
+
+.form-label {
+    display: block; /* label занимает всю ширину */
+    font-weight: bold; /* Жирный шрифт для label */
+    margin-bottom: 5px; /* Отступ снизу от label */
+}
+
+.form-control {
+    width: 100%; /* input занимает всю ширину */
+    padding: 8px; /* Внутренние отступы для input */
+    box-sizing: border-box; /* Чтобы padding не влиял на ширину */
+    border: 1px solid #ccc; /* Рамка для input */
+    border-radius: 4px; /* Скругление углов для input */
+}

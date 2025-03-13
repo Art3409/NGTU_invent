@@ -1,0 +1,25 @@
+
+{% extends "base.html" %}
+{% block content %}
+    <h1>Добавить аудиторию</h1>
+    <div class="form-container">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.name.label(class="form-label") }}
+                {{ form.name(class="form-control") }}
+                {% for error in form.name.errors %}
+                    <span class="error-message">{{ error }}</span>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.description.label(class="form-label") }}
+                {{ form.description(class="form-control") }}
+                {% for error in form.description.errors %}
+                    <span class="error-message">{{ error }}</span>
+                {% endfor %}
+            </div>
+            <button type="submit" class="button">Сохранить</button>
+        </form>
+    </div>
+{% endblock %}
