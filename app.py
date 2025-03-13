@@ -83,41 +83,43 @@ def rooms():
 
 @app.route('/rooms/new', methods=['GET', 'POST'])
 @login_required
-@role_required('admin')
+
 def add_room():
     form = RoomForm()
-    if form.validate_on_submit():
-        room = Room(name=form.name.data, description=form.description.data)
-        db.session.add(room)
-        db.session.commit()
-        flash('Аудитория успешно добавлена!', 'success')
-        return redirect(url_for('rooms'))
-    return render_template('create_room.html', title='Добавить аудиторию', form=form)
+    if current_user.has_role('admin') or current_user.has_role('superadmin'):
+        if form.validate_on_submit():
+            room = Room(name=form.name.data, description=form.description.data)
+            db.session.add(room)
+            db.session.commit()
+            flash('Аудитория успешно добавлена!', 'success')
+            return redirect(url_for('rooms'))
+        return render_template('create_room.html', title='Добавить аудиторию', form=form)
 
 @app.route('/rooms/<int:room_id>/edit', methods=['GET', 'POST'])
 @login_required
-@role_required('admin')
 def edit_room(room_id):
-    room = Room.query.get_or_404(room_id)
-    form = RoomForm(obj=room)  # Pre-populate the form with room data
-    if form.validate_on_submit():
-        room.name = form.name.data
-        room.description = form.description.data
-        db.session.commit()
-        flash('Аудитория успешно обновлена!', 'success')
-        return redirect(url_for('rooms'))
-    return render_template('edit_room.html', title='Редактировать аудиторию', form=form)
+    if current_user.has_role('admin') or current_user.has_role('superadmin'):
+        room = Room.query.get_or_404(room_id)
+        form = RoomForm(obj=room)  # Pre-populate the form with room data
+        if form.validate_on_submit():
+            room.name = form.name.data
+            room.description = form.description.data
+            db.session.commit()
+            flash('Аудитория успешно обновлена!', 'success')
+            return redirect(url_for('rooms'))
+        return render_template('edit_room.html', title='Редактировать аудиторию', form=form)
 
 
 @app.route('/rooms/<int:room_id>/delete', methods=['POST'])
 @login_required
-@role_required('admin')
+
 def delete_room(room_id):
-    room = Room.query.get_or_404(room_id)
-    db.session.delete(room)
-    db.session.commit()
-    flash('Аудитория успешно удалена!', 'success')
-    return redirect(url_for('rooms'))
+    if current_user.has_role('admin') or current_user.has_role('superadmin'):
+        room = Room.query.get_or_404(room_id)
+        db.session.delete(room)
+        db.session.commit()
+        flash('Аудитория успешно удалена!', 'success')
+        return redirect(url_for('rooms'))
 
 @app.route('/items')
 @login_required
@@ -127,43 +129,46 @@ def items():
 
 @app.route('/items/new', methods=['GET', 'POST'])
 @login_required
-@role_required('admin')
+
 def add_item():
-    form = ItemForm()
-    if form.validate_on_submit():
-        item = Item(type=form.type.data, description=form.description.data,
-                    quantity=form.quantity.data, status=form.status.data)
-        db.session.add(item)
-        db.session.commit()
-        flash('Предмет успешно добавлен!', 'success')
-        return redirect(url_for('items'))
-    return render_template('create_item.html', title='Добавить предмет', form=form)
+    if current_user.has_role('admin') or current_user.has_role('superadmin'):
+        form = ItemForm()
+        if form.validate_on_submit():
+            item = Item(type=form.type.data, description=form.description.data,
+                        quantity=form.quantity.data, status=form.status.data)
+            db.session.add(item)
+            db.session.commit()
+            flash('Предмет успешно добавлен!', 'success')
+            return redirect(url_for('items'))
+        return render_template('create_item.html', title='Добавить предмет', form=form)
 
 @app.route('/items/<int:item_id>/edit', methods=['GET', 'POST'])
 @login_required
-@role_required('admin')
+
 def edit_item(item_id):
-    item = Item.query.get_or_404(item_id)
-    form = ItemForm(obj=item)
-    if form.validate_on_submit():
-        item.type = form.type.data
-        item.description = form.description.data
-        item.quantity = form.quantity.data
-        item.status = form.status.data
-        db.session.commit()
-        flash('Предмет успешно обновлен!', 'success')
-        return redirect(url_for('items'))
-    return render_template('edit_item.html', title='Редактировать предмет', form=form)
+    if current_user.has_role('admin') or current_user.has_role('superadmin'):
+        item = Item.query.get_or_404(item_id)
+        form = ItemForm(obj=item)
+        if form.validate_on_submit():
+            item.type = form.type.data
+            item.description = form.description.data
+            item.quantity = form.quantity.data
+            item.status = form.status.data
+            db.session.commit()
+            flash('Предмет успешно обновлен!', 'success')
+            return redirect(url_for('items'))
+        return render_template('edit_item.html', title='Редактировать предмет', form=form)
 
 @app.route('/items/<int:item_id>/delete', methods=['POST'])
 @login_required
-@role_required('admin')
+
 def delete_item(item_id):
-    item = Item.query.get_or_404(item_id)
-    db.session.delete(item)
-    db.session.commit()
-    flash('Предмет успешно удален!', 'success')
-    return redirect(url_for('items'))
+    if current_user.has_role('admin') or current_user.has_role('superadmin'):
+        item = Item.query.get_or_404(item_id)
+        db.session.delete(item)
+        db.session.commit()
+        flash('Предмет успешно удален!', 'success')
+        return redirect(url_for('items'))
 
 # Создание базы данных и добавление суперадмина
 def create_db_and_admin():
