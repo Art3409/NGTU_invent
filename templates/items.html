@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
     <h1>Предметы</h1>
+    {% if current_user.has_role('admin') %}
+        <a href="{{ url_for('add_item') }}" class="button">Добавить предмет</a>
+    {% endif %}
     <div class="table-container">
         <table class="table" id="itemsTable">
             <thead>
@@ -46,16 +49,17 @@
                         {% endif %}
                     </td>
                     <td>
-                        <a href="{{ url_for('edit_item', item_id=item.id) }}" class="button">Редактировать</a>
-                        <form method="post" action="{{ url_for('delete_item', item_id=item.id) }}" style="display: inline;">
-                            <button type="submit" class="button button-danger" onclick="return confirm('Вы уверены, что хотите удалить этот предмет?')">Удалить</button>
-                        </form>
+                        {% if current_user.has_role('admin') %}
+                            <a href="{{ url_for('edit_item', item_id=item.id) }}" class="button">Редактировать</a>
+                            <form method="post" action="{{ url_for('delete_item', item_id=item.id) }}" style="display: inline;">
+                                <button type="submit" class="button button-danger" onclick="return confirm('Вы уверены, что хотите удалить этот предмет?')">Удалить</button>
+                            </form>
+                        {% endif %}
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
-    <script src="{{ url_for('static', filename='search.js') }}"></script>
 {% endblock %}
 
