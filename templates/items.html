@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
     <h1>Предметы</h1>
-    {% if current_user.has_role('admin') %}
+    {% if current_user.has_role('admin') or current_user.has_role('superadmin') %}
         <a href="{{ url_for('add_item') }}" class="button">Добавить предмет</a>
     {% endif %}
     <div class="table-container">
@@ -62,4 +62,3 @@
         </table>
     </div>
 {% endblock %}
-
