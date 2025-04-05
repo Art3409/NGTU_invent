@@ -9,7 +9,7 @@ import os
 from functools import wraps
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://postgres:12345@localhost:5432/postgres'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://postgres:admin@localhost:5432/postgres'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = '12345'
 db.init_app(app)
@@ -48,7 +48,7 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data)
-        user = User(username=form.username.data, password_hash=hashed_password, role=form.role.data)  # Use password_hash
+        user = User(username=form.username.data, password_hash=hashed_password, role=form.role.data)  
         db.session.add(user)
         db.session.commit()
         flash('Аккаунт успешно создан!', 'success')
@@ -60,7 +60,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
-        if user and check_password_hash(user.password_hash, form.password.data): #check_password_hash(user.password_hash, form.password.data)
+        if user and check_password_hash(user.password_hash, form.password.data): 
             login_user(user)
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('index'))
@@ -100,7 +100,7 @@ def add_room():
 def edit_room(room_id):
     if current_user.has_role('admin') or current_user.has_role('superadmin'):
         room = Room.query.get_or_404(room_id)
-        form = RoomForm(obj=room)  # Pre-populate the form with room data
+        form = RoomForm(obj=room)  
         if form.validate_on_submit():
             room.name = form.name.data
             room.description = form.description.data
@@ -129,13 +129,24 @@ def items():
 
 @app.route('/items/new', methods=['GET', 'POST'])
 @login_required
-
 def add_item():
     if current_user.has_role('admin') or current_user.has_role('superadmin'):
         form = ItemForm()
+        
+        room_id = request.args.get('room_id')
+        
+        
+        if room_id:
+            form.room_id.data = room_id
+        
         if form.validate_on_submit():
-            item = Item(type=form.type.data, description=form.description.data,
-                        quantity=form.quantity.data, status=form.status.data)
+            item = Item(
+                type=form.type.data,
+                description=form.description.data,
+                quantity=form.quantity.data,
+                status=form.status.data,
+                room_id=form.room_id.data
+            )
             db.session.add(item)
             db.session.commit()
             flash('Предмет успешно добавлен!', 'success')
@@ -185,5 +196,5 @@ def create_db_and_admin():
             print('Суперадмин создан!')
 
 if __name__ == '__main__':
-    #create_db_and_admin() # Create the DB and the superadmin user
+    create_db_and_admin() 
     app.run(debug=True)

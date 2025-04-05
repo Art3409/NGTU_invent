@@ -1,4 +1,3 @@
-
 {% extends "base.html" %}
 {% block content %}
     <h1>Добавить предмет</h1>
@@ -30,6 +29,13 @@
                 {{ form.status.label(class="form-label") }}
                 {{ form.status(class="form-control") }}
                 {% for error in form.status.errors %}
+                    <span class="error-message">{{ error }}</span>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.room_id.label(class="form-label") }}
+                {{ form.room_id(class="form-control") }}
+                {% for error in form.room_id.errors %}
                     <span class="error-message">{{ error }}</span>
                 {% endfor %}
             </div>

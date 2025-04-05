@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, IntegerField, SelectField, PasswordField
 from wtforms.validators import DataRequired, Length, EqualTo, ValidationError
-from models import User  # Импортируем модель User
+from models import User, Room
 
 class RoomForm(FlaskForm):
     name = StringField('Название', validators=[DataRequired()])
@@ -23,6 +23,11 @@ class ItemForm(FlaskForm):
         ('взята на время', 'взята на время'),
         ('отдана в использование', 'отдана в использование')
     ], validators=[DataRequired()])
+    room_id = SelectField('Аудитория', coerce=int, validators=[DataRequired()])
+    
+    def __init__(self, *args, **kwargs):
+        super(ItemForm, self).__init__(*args, **kwargs)
+        self.room_id.choices = [(r.id, r.name) for r in Room.query.order_by('name')]
 
 class RegistrationForm(FlaskForm):
     username = StringField('Имя пользователя', validators=[DataRequired(), Length(min=3, max=80)])

@@ -10,6 +10,7 @@
                 <tr>
                     <th>Название</th>
                     <th>Описание</th>
+                    <th>Количество предметов</th>
                     <th>Действия</th>
                 </tr>
             </thead>
@@ -18,12 +19,14 @@
                 <tr>
                     <td>{{ room.name }}</td>
                     <td>{{ room.description }}</td>
+                    <td>{{ room.items|length }}</td>
                     <td>
                         {% if current_user.has_role('admin') or current_user.has_role('superadmin') %}
                             <a href="{{ url_for('edit_room', room_id=room.id) }}" class="button">Редактировать</a>
                             <form method="post" action="{{ url_for('delete_room', room_id=room.id) }}" style="display: inline;">
                                 <button type="submit" class="button button-danger" onclick="return confirm('Вы уверены, что хотите удалить эту аудиторию?')">Удалить</button>
                             </form>
+                            <a href="{{ url_for('add_item', room_id=room.id) }}" class="button">Добавить предмет</a>
                         {% endif %}
                     </td>
                 </tr>
