@@ -9,7 +9,7 @@ import os
 from functools import wraps
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://postgres:admin@localhost:5432/postgres'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://postgres:12345@localhost:5432/postgres'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = '12345'
 db.init_app(app)
@@ -112,13 +112,19 @@ def edit_room(room_id):
 
 @app.route('/rooms/<int:room_id>/delete', methods=['POST'])
 @login_required
-
 def delete_room(room_id):
     if current_user.has_role('admin') or current_user.has_role('superadmin'):
         room = Room.query.get_or_404(room_id)
+        
+        # Удаляем все предметы в этой аудитории
+        for item in room.items:
+            db.session.delete(item)
+        
+        # Удаляем саму аудиторию
         db.session.delete(room)
         db.session.commit()
-        flash('Аудитория успешно удалена!', 'success')
+        
+        flash('Аудитория и все её предметы успешно удалены!', 'success')
         return redirect(url_for('rooms'))
 
 @app.route('/items')
@@ -196,5 +202,5 @@ def create_db_and_admin():
             print('Суперадмин создан!')
 
 if __name__ == '__main__':
-    create_db_and_admin() 
+    #create_db_and_admin() 
     app.run(debug=True)
